@@ -55,6 +55,8 @@
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
 
         <property name="realm" ref="myRealm"/>
+
+        <property name="rememberMeManager" ref="rememberMeManager"/>
     </bean>
 
     <!--表单认证过滤器-->
@@ -67,7 +69,21 @@
 
         <property name="passwordParam" value="password"/>
 
+        <property name="rememberMeParam" value="rememberMe"/>
+
         <property name="loginUrl" value="/loginsubmit"/>
+    </bean>
+
+    <bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+
+        <property name="cookie" ref="rememberMeCookie"/>
+    </bean>
+
+    <bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <constructor-arg value="rememberMe"/>
+
+        <!--记住我cookie生效时间30天-->
+        <property name="maxAge" value="2592000"/>
     </bean>
 
 </beans>

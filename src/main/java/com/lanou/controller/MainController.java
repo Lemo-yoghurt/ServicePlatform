@@ -8,7 +8,9 @@ import com.lanou.utils.VerifyCode;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -33,8 +35,17 @@ public class MainController {
      *
      * @return
      */
-    @RequestMapping(value = "/home")
-    public String home() {
+    @RequestMapping(value = "/")
+    public String home(Model model) {
+        //从shiro的session中取user
+        Subject subject = SecurityUtils.getSubject();
+
+        User user = (User) subject.getPrincipal();
+
+        System.out.println(user);
+
+        model.addAttribute("user",user);
+
         return "index";
     }
 
@@ -71,7 +82,7 @@ public class MainController {
     public String login() throws IOException {
 
         if(SecurityUtils.getSubject().isAuthenticated()){
-            return "/home";
+            return "index";
         }
         return "login";
     }

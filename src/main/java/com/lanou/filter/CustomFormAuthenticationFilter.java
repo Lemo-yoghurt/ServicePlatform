@@ -12,6 +12,13 @@ import javax.servlet.http.HttpSession;
  */
 public class CustomFormAuthenticationFilter extends FormAuthenticationFilter {
 
+
+
+    @Override
+    protected boolean isRememberMe(ServletRequest request) {
+        return super.isRememberMe(request);
+    }
+
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
 

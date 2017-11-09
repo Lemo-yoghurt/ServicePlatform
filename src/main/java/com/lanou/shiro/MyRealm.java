@@ -2,17 +2,17 @@ package com.lanou.shiro;
 
 
 import com.lanou.bean.User;
-import com.lanou.mapper.UserMapper;
 import com.lanou.service.UserService;
-import com.lanou.service.impl.UserServiceImpl;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,6 +36,8 @@ public class MyRealm extends AuthorizingRealm {
     public boolean supports(AuthenticationToken token) {
         return token instanceof UsernamePasswordToken;
     }
+
+
 
     //授权
     @Override
@@ -74,6 +76,9 @@ public class MyRealm extends AuthorizingRealm {
         if (!(user.getPassword().equals(password))) {
             throw new IncorrectCredentialsException("密码不对");
         }
+
+
+
 
 
         return new SimpleAuthenticationInfo(user, password, getName());
