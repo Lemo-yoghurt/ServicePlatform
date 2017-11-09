@@ -3,14 +3,13 @@ package com.lanou.shiro;
 
 import com.lanou.bean.User;
 import com.lanou.service.UserService;
+import com.lanou.service.impl.UserServiceImpl;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.springframework.beans.factory.annotation.Qualifier;
 
-import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,7 +19,7 @@ import java.util.List;
 
 public class MyRealm extends AuthorizingRealm {
 
-    private UserService userService;
+//    private UserService userService = new UserServiceImpl();
 
     @Override
     public String getName() {
@@ -54,28 +53,29 @@ public class MyRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         String username = (String) authenticationToken.getPrincipal();
+        System.out.println(username);
 
-        User  user = userService.findUserByUserName(username);
+//        User  user = userService.findUserByUserName(username);
+//
+//        System.out.println(user);
 
-        if (user == null) {
+        if (!"aaa".equals(username)) {
 
             throw new UnknownAccountException("用户名不对");
         }
         String password = new String((char[]) authenticationToken.getCredentials());
+        System.out.println(password);
 
-        if (!(user.getPassword().equals(password))) {
+        if (!("aaaaaa".equals(password))) {
             throw new IncorrectCredentialsException("密码不对");
         }
+
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
 
         return new SimpleAuthenticationInfo(user, password, getName());
 
     }
 
-    public UserService getUserService() {
-        return userService;
-    }
-
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
 }

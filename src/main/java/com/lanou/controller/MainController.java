@@ -26,7 +26,7 @@ public class MainController {
      *
      * @return
      */
-    @RequestMapping(value = "/home")
+    @RequestMapping(value = "/")
     public String home() {
         return "index";
     }
@@ -64,7 +64,7 @@ public class MainController {
     public String login() throws IOException {
 
         if(SecurityUtils.getSubject().isAuthenticated()){
-            return "/home";
+            return "/";
         }
         return "login";
     }
@@ -74,7 +74,7 @@ public class MainController {
     public String loginsubmit(HttpServletRequest request) throws Exception {
         String exceptionClassName =
                 (String) request.getAttribute("shiroLoginFailure");
-
+        System.out.println(exceptionClassName);
         if (exceptionClassName.equals(UnknownAccountException.class.getName())){
             throw new CustomException("账户名不存在");
         }else if (IncorrectCredentialsException.class.getName().equals(exceptionClassName)){

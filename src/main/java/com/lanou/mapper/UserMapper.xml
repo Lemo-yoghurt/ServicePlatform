@@ -35,6 +35,7 @@
     from sys_user
     where id = #{id,jdbcType=INTEGER}
   </select>
+
   <select id="findUserByUserName" resultMap="BaseResultMap">
     SELECT <include refid="Base_Column_List"/>
     FROM sys_user WHERE username=#{name}
