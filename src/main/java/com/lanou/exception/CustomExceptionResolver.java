@@ -45,7 +45,7 @@ public class CustomExceptionResolver implements HandlerExceptionResolver {
         httpServletRequest.setAttribute("msg",msg);
 
         try {
-            httpServletRequest.getRequestDispatcher("/WEB-INF/404.html").forward(httpServletRequest,httpServletResponse);
+            httpServletRequest.getRequestDispatcher("/WEB-INF/login.html").forward(httpServletRequest,httpServletResponse);
         } catch (ServletException e) {
             e.printStackTrace();
         } catch (IOException e) {

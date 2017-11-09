@@ -11,7 +11,7 @@ import javax.annotation.Resource;
  * Created by dllo on 17/11/8.
  */
 
-@Service
+@Service("aaaaaa")
 public class UserServiceImpl implements UserService {
 
     @Resource

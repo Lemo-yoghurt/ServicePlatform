@@ -26,7 +26,7 @@ public class MainController {
      *
      * @return
      */
-    @RequestMapping(value = "/")
+    @RequestMapping(value = "/home")
     public String home() {
         return "index";
     }
@@ -64,7 +64,7 @@ public class MainController {
     public String login() throws IOException {
 
         if(SecurityUtils.getSubject().isAuthenticated()){
-            return "/";
+            return "/home";
         }
         return "login";
     }
