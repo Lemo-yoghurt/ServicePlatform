@@ -27,9 +27,10 @@
                 /lib/** = anon
                 /static/** = anon
                 /temp/** = anon
-
+                <!--/verifycode = anon-->
                 <!--该地址是要经过表单认证过滤器的-->
                 /loginsubmit = authc
+
 
                 <!--退出,请求logout-->
                 /logout = logout

@@ -44,7 +44,6 @@ public class MainController {
     public void verifyCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 
-        System.out.println("qwqwqw");
         //用于处理真正的返回结果
         VerifyCode verifyCode = new VerifyCode();//创建工具类对象
 
@@ -57,7 +56,7 @@ public class MainController {
         //获得response对象的输出流用于图像的写入
         OutputStream os = response.getOutputStream();
 
-       verifyCode.output(image, os);//将图片对象
+       VerifyCode.output(image, os);//将图片对象
     }
 
 
