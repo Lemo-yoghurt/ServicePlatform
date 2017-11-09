@@ -26,7 +26,7 @@ public class MainController {
      *
      * @return
      */
-    @RequestMapping(value = "/home")
+    @RequestMapping(value = "/")
     public String home() {
         return "index";
     }
@@ -83,6 +83,11 @@ public class MainController {
             throw new Exception();
         }
 
+    }
+
+    @RequestMapping(value = "/admin-list")
+    public String role() {
+        return "admin-list";
     }
 
 }
