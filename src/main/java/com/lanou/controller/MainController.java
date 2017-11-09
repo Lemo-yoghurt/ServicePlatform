@@ -121,4 +121,13 @@ public class MainController {
         return "admin-list";
     }
 
+    /**
+     * 角色管理
+     * @return /admin-role
+     */
+    @RequestMapping(value = "/admin-role")
+    public String adminPermission() {
+        return "admin-role";
+    }
+
 }
