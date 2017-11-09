@@ -6,12 +6,13 @@ import com.lanou.service.UserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Created by dllo on 17/11/8.
  */
 
-@Service("aaaaaa")
+@Service
 public class UserServiceImpl implements UserService {
 
     @Resource
@@ -21,4 +22,11 @@ public class UserServiceImpl implements UserService {
     public User findUserByUserName(String name) {
         return userMapper.findUserByUserName(name);
     }
+
+    @Override
+    public List<User> getAllAdmin() {
+        return userMapper.findAllAdmin();
+    }
+
+
 }

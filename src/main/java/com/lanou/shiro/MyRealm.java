@@ -22,11 +22,10 @@ import java.util.List;
 
 public class MyRealm extends AuthorizingRealm {
 
-    @Resource(name = "aaaaaa")
+    @Resource
     private UserService userService;
 
-//    @Autowired
-//    private UserMapper userMapper;
+
 
     @Override
     public String getName() {
@@ -60,7 +59,7 @@ public class MyRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         String username = (String) authenticationToken.getPrincipal();
-        System.out.println(username);
+
 
         User  user = userService.findUserByUserName(username);
 
@@ -71,15 +70,11 @@ public class MyRealm extends AuthorizingRealm {
             throw new UnknownAccountException("用户名不对");
         }
         String password = new String((char[]) authenticationToken.getCredentials());
-        System.out.println(password);
 
         if (!(user.getPassword().equals(password))) {
             throw new IncorrectCredentialsException("密码不对");
         }
-//
-//        User user = new User();
-//        user.setUsername(username);
-//        user.setPassword(password);
+
 
         return new SimpleAuthenticationInfo(user, password, getName());
 

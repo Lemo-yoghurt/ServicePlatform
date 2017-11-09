@@ -35,15 +35,17 @@
                     <input id="username" name="username" type="text" placeholder="账户" class="input-text size-L">
                 </div>
             </div>
+            <div id="error1" style="color: red"></div>
             <div class="row cl">
                 <label class="form-label col-xs-3"><i class="Hui-iconfont">&#xe60e;</i></label>
                 <div class="formControls col-xs-8">
                     <input id="password" name="password" type="password" placeholder="密码" class="input-text size-L">
                 </div>
+                <div id="error2" style="color: red"></div>
             </div>
             <div class="row cl">
                 <div class="formControls col-xs-8 col-xs-offset-3">
-                    <input class="input-text size-L" type="text" placeholder="验证码"
+                    <input class="input-text size-L" id="verifycode" name="randomcode" type="text" placeholder="验证码"
                            onblur="if(this.value==''){this.value='验证码:'}"
                            onclick="if(this.value=='验证码:'){this.value='';}" value="验证码:" style="width:150px;">
                     <img id="img"> <a id="change">看不清，换一张</a></div>
@@ -72,19 +74,45 @@
 <!--<script src="/lib/jquery/1.9.1/jquery.js"></script>-->
 <!--此乃百度统计代码，请自行删除-->
 <script>
-//    var _hmt = _hmt || [];
-//    (function () {
-//        var hm = document.createElement("script");
-//        hm.src = "https://hm.baidu.com/hm.js?080836300300be57b7f34f4b3e97d911";
-//        var s = document.getElementsByTagName("script")[0];
-//        s.parentNode.insertBefore(hm, s);
-//    })();
+    //    var _hmt = _hmt || [];
+    //    (function () {
+    //        var hm = document.createElement("script");
+    //        hm.src = "https://hm.baidu.com/hm.js?080836300300be57b7f34f4b3e97d911";
+    //        var s = document.getElementsByTagName("script")[0];
+    //        s.parentNode.insertBefore(hm, s);
+    //    })();
 
+    //显示验证码
     $("#img").attr("src", "/verifycode?timesStamp=" + Math.random());
 
+    //换验证码
     $("#change").click(function () {
         $("#img").attr("src", "/verifycode?timesStamp=" + Math.random())
     })
+
+    //验证用户名
+    $("#username").change(function () {
+        var reg = /^[a-zA-Z\d\u2E80-\u9FFF]{0,20}$/
+        var name = $(this).val()
+        if (!reg.test(name)) {
+            $("#error1").html("用户名必须由20位以内的字母,数字或汉字组成")
+        } else {
+            $("#error1").hide()
+        }
+    })
+
+    //验证密码
+    $("#password").change(function () {
+        var reg = /^[a-zA-Z\d\_\u2E80-\u9FFF]{0,30}$/
+        var pwd = $(this).val()
+        if (!reg.test(pwd)){
+            $("#error2").html("密码必须由30长度以内的字母、数字和下划线的组合")
+        }else {
+            $("#error2").hide()
+        }
+    })
+
+
 </script>
 <!--/此乃百度统计代码，请自行删除
 </body>

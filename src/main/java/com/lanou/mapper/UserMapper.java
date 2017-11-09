@@ -2,6 +2,8 @@ package com.lanou.mapper;
 
 import com.lanou.bean.User;
 
+import java.util.List;
+
 public interface UserMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -16,4 +18,6 @@ public interface UserMapper {
     int updateByPrimaryKey(User record);
 
     User findUserByUserName(String name);
+
+    List<User> findAllAdmin();
 }
