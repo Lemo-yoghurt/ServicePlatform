@@ -1,5 +1,6 @@
 package com.lanou.service;
 
+import com.github.pagehelper.PageInfo;
 import com.lanou.bean.User;
 
 import java.util.List;
@@ -13,4 +14,11 @@ public interface UserService {
 
     List<User> getAllAdmin();
 
+    PageInfo<User> queryUserByPage(Integer pageNo,Integer pageSize);
+
+    User findUserByUserId(Integer id);
+
+    void updateUser(User user);
+
+    void insertUser(User user);
 }

@@ -28,7 +28,7 @@
                 /static/** = anon
                 /temp/** = anon
                 /verifycode = anon
-                /getAllAdmin = anon
+                //getAllUsers = anon
                 <!--该地址是要经过表单认证过滤器的-->
                 /loginsubmit = authc
 

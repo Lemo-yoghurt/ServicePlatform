@@ -1,5 +1,6 @@
 package com.lanou.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.lanou.bean.User;
 import com.lanou.exception.CustomException;
 import com.lanou.service.UserService;
@@ -12,6 +13,8 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
@@ -20,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -116,9 +120,26 @@ public class MainController {
 
     }
 
+    //分页
+    @ResponseBody
+    @RequestMapping(value = "/getAllUsers")
+    public PageInfo<User> getAllUsers(@RequestParam("no") Integer pageNo,
+                                      @RequestParam("size") Integer pageSize){
+
+        PageInfo<User> pageInfo = userService.queryUserByPage(pageNo, pageSize);
+
+        return pageInfo;
+    }
+
     @RequestMapping(value = "/admin-list")
     public String role() {
         return "admin-list";
+    }
+
+    //添加页面
+    @RequestMapping(value = "/admin-add")
+    public String addAdmin(){
+        return "admin-add";
     }
 
     /**
@@ -128,6 +149,34 @@ public class MainController {
     @RequestMapping(value = "/admin-role")
     public String adminPermission() {
         return "admin-role";
+    }
+
+    //禁用或开启
+    @ResponseBody
+    @RequestMapping(value = "/openOrPause")
+    public AjaxResult openOrPause(@RequestParam("uid") Integer uid,
+                                  @RequestParam("flag") Integer flag){
+          User user = userService.findUserByUserId(uid);
+          if (flag == 0){
+              user.setState(0);
+          }else if (flag == 1){
+              user.setState(1);
+          }
+
+          userService.updateUser(user);
+
+          return new AjaxResult(user);
+
+    }
+    //添加用户
+    @ResponseBody
+    @RequestMapping(value = "/addAdmin",method = RequestMethod.POST)
+    public AjaxResult addUser(User user){
+        System.out.println(user);
+        user.setState(1);
+        user.setCreateTime(new Date());
+        userService.insertUser(user);
+        return new AjaxResult(user);
     }
 
 }

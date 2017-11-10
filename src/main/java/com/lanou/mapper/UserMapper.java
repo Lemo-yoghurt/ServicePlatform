@@ -1,6 +1,5 @@
 package com.lanou.mapper;
 
-import com.lanou.bean.Role;
 import com.lanou.bean.User;
 
 import java.util.List;

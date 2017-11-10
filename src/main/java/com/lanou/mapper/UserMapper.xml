@@ -99,7 +99,7 @@
       #{createId,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{updateId,jdbcType=INTEGER}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.lanou.bean.User">
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.lanou.bean.User">
     insert into sys_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
