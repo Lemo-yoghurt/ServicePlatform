@@ -1,6 +1,7 @@
 package com.lanou.bean;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author dllo
@@ -33,14 +34,14 @@ public class Role {
 
     private String remark;
 
-    private User user;
+    private List<User> users;
 
-    public User getUser() {
-        return user;
+    public List<User> getUsers() {
+        return users;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     public Integer getId() {
@@ -127,7 +128,7 @@ public class Role {
                 ", updateTime=" + updateTime +
                 ", updateId=" + updateId +
                 ", remark='" + remark + '\'' +
-                ", user=" + user +
+                ", users=" + users +
                 '}';
     }
 }

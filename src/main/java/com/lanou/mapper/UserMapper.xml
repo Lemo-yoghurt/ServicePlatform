@@ -23,6 +23,33 @@
     <result column="create_id" jdbcType="INTEGER" property="createId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_id" jdbcType="INTEGER" property="updateId" />
+    <association property="role" column="id" javaType="com.lanou.bean.Role"
+                 select="com.lanou.mapper.RoleMapper.findRoleByUserId"/>
+  </resultMap>
+
+
+  <resultMap id="userMap" type="com.lanou.bean.User">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="realname" jdbcType="VARCHAR" property="realname" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="usertype" jdbcType="INTEGER" property="usertype" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="third_id" jdbcType="VARCHAR" property="thirdId" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="tel" jdbcType="VARCHAR" property="tel" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="title_url" jdbcType="VARCHAR" property="titleUrl" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="theme" jdbcType="VARCHAR" property="theme" />
+    <result column="back_site_id" jdbcType="INTEGER" property="backSiteId" />
+    <result column="create_site_id" jdbcType="INTEGER" property="createSiteId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_id" jdbcType="INTEGER" property="createId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_id" jdbcType="INTEGER" property="updateId" />
   </resultMap>
   <sql id="Base_Column_List">
     id, username, password, realname, role_id, usertype, state, third_id, end_time, email, 
@@ -43,6 +70,11 @@
   <select id="findAllAdmin" resultMap="BaseResultMap">
     SELECT <include refid="Base_Column_List"/>
     FROM sys_user
+  </select>
+
+  <select id="findUsersByRoleId" resultMap="userMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM sys_user WHERE role_id=#{roleId}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">

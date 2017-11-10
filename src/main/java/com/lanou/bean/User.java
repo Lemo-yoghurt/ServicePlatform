@@ -45,6 +45,8 @@ public class User {
 
     private Integer updateId;
 
+    private Role role;
+
     public Integer getId() {
         return id;
     }
@@ -213,6 +215,14 @@ public class User {
         this.updateId = updateId;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -237,6 +247,10 @@ public class User {
                 ", createId=" + createId +
                 ", updateTime=" + updateTime +
                 ", updateId=" + updateId +
+                ", role=" + role +
                 '}';
     }
+
+
+
 }

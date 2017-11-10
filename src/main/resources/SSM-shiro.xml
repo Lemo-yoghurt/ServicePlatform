@@ -46,8 +46,6 @@
             </value>
         </property>
 
-
-
     </bean>
 
     <bean id="myRealm" class="com.lanou.shiro.MyRealm"/>

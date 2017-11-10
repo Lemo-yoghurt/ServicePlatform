@@ -1,5 +1,6 @@
 package com.lanou.mapper;
 
+import com.lanou.bean.Role;
 import com.lanou.bean.User;
 
 import java.util.List;
@@ -20,4 +21,6 @@ public interface UserMapper {
     User findUserByUserName(String name);
 
     List<User> findAllAdmin();
+
+    List<User> findUsersByRoleId(Integer roleId);
 }

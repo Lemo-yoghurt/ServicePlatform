@@ -10,11 +10,21 @@
     <result column="create_id" jdbcType="INTEGER" property="createId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_id" jdbcType="INTEGER" property="updateId" />
-    <association property="user"
-                 column="create_id"
-                 javaType="com.lanou.bean.User"
-                 select="com.lanou.mapper.UserMapper.selectByPrimaryKey"/>
+    <collection property="users" column="id" javaType="List"
+                select="com.lanou.mapper.UserMapper.findUsersByRoleId"/>
   </resultMap>
+
+  <resultMap id="roleMap" type="com.lanou.bean.Role">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_id" jdbcType="INTEGER" property="createId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_id" jdbcType="INTEGER" property="updateId" />
+  </resultMap>
+
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.lanou.bean.Role">
     <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
   </resultMap>
@@ -36,6 +46,11 @@
   <select id="findAllRole" resultMap="BaseResultMap">
     SELECT <include refid="Base_Column_List"/>
     FROM sys_role
+  </select>
+
+  <select id="findRoleByUserId" resultMap="roleMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM sys_role WHERE id IN (SELECT role_id FROM sys_user WHERE id=#{userId})
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
