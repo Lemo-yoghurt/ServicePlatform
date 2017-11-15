@@ -5,6 +5,8 @@ import com.lanou.bean.Role;
 import java.util.List;
 
 public interface RoleMapper {
+
+
     int deleteByPrimaryKey(Integer id);
 
     int insert(Role record);

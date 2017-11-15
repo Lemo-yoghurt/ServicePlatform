@@ -67,6 +67,7 @@
 
         <property name="passwordParam" value="password"/>
 
+        <!--保持登录-->
         <property name="rememberMeParam" value="rememberMe"/>
 
         <property name="loginUrl" value="/loginsubmit"/>
