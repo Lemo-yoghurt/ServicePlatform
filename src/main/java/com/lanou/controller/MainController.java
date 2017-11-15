@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -35,8 +36,8 @@ public class MainController {
 
     @Resource
     private UserService userService;
+
     /**
-     *
      * @return
      */
     @RequestMapping(value = "/")
@@ -48,7 +49,7 @@ public class MainController {
 
         System.out.println(user);
 
-        model.addAttribute("user",user);
+        model.addAttribute("user", user);
 
         return "index";
     }
@@ -58,7 +59,6 @@ public class MainController {
     public String welcome() {
         return "welcome";
     }
-
 
 
     @ResponseBody
@@ -85,7 +85,7 @@ public class MainController {
     @RequestMapping("/login")
     public String login() throws IOException {
 
-        if(SecurityUtils.getSubject().isAuthenticated()){
+        if (SecurityUtils.getSubject().isAuthenticated()) {
             return "index";
         }
         return "login";
@@ -96,13 +96,13 @@ public class MainController {
     public String loginsubmit(HttpServletRequest request) throws Exception {
         String exceptionClassName =
                 (String) request.getAttribute("shiroLoginFailure");
-        if (exceptionClassName.equals(UnknownAccountException.class.getName())){
+        if (exceptionClassName.equals(UnknownAccountException.class.getName())) {
             throw new CustomException("账户名不存在");
-        }else if (IncorrectCredentialsException.class.getName().equals(exceptionClassName)){
-            throw  new CustomException("密码错误");
-        }else if ("randomCodeError".equals(exceptionClassName)){
+        } else if (IncorrectCredentialsException.class.getName().equals(exceptionClassName)) {
+            throw new CustomException("密码错误");
+        } else if ("randomCodeError".equals(exceptionClassName)) {
             throw new CustomException("验证码错误");
-        }else {
+        } else {
             throw new Exception();
         }
 
@@ -124,7 +124,7 @@ public class MainController {
     @ResponseBody
     @RequestMapping(value = "/getAllUsers")
     public PageInfo<User> getAllUsers(@RequestParam("no") Integer pageNo,
-                                      @RequestParam("size") Integer pageSize){
+                                      @RequestParam("size") Integer pageSize) {
 
         PageInfo<User> pageInfo = userService.queryUserByPage(pageNo, pageSize);
 
@@ -138,12 +138,19 @@ public class MainController {
 
     //添加页面
     @RequestMapping(value = "/admin-add")
-    public String addAdmin(){
+    public String addAdmin() {
         return "admin-add";
+    }
+
+    //修改页面
+    @RequestMapping(value = "/admin-modi")
+    public String modiAdmin(){
+        return "admin-modi";
     }
 
     /**
      * 角色管理
+     *
      * @return /admin-role
      */
     @RequestMapping(value = "/admin-role")
@@ -155,28 +162,92 @@ public class MainController {
     @ResponseBody
     @RequestMapping(value = "/openOrPause")
     public AjaxResult openOrPause(@RequestParam("uid") Integer uid,
-                                  @RequestParam("flag") Integer flag){
-          User user = userService.findUserByUserId(uid);
-          if (flag == 0){
-              user.setState(0);
-          }else if (flag == 1){
-              user.setState(1);
-          }
+                                  @RequestParam("flag") Integer flag) {
+        User user = userService.findUserByUserId(uid);
+        if (flag == 0) {
+            user.setState(0);
+        } else if (flag == 1) {
+            user.setState(1);
+        }
 
-          userService.updateUser(user);
+        userService.updateUser(user);
 
-          return new AjaxResult(user);
+        return new AjaxResult(user);
 
     }
+
     //添加用户
     @ResponseBody
-    @RequestMapping(value = "/addAdmin",method = RequestMethod.POST)
-    public AjaxResult addUser(User user){
-        System.out.println(user);
+    @RequestMapping(value = "/addAdmin", method = RequestMethod.POST)
+    public AjaxResult addUser(User user) {
         user.setState(1);
         user.setCreateTime(new Date());
         userService.insertUser(user);
         return new AjaxResult(user);
+    }
+
+    //删除用户
+    @ResponseBody
+    @RequestMapping(value = "/delUser")
+    public AjaxResult delUser(@RequestParam("uid") Integer uid) {
+        userService.delUser(uid);
+        return new AjaxResult(uid);
+    }
+
+    //批量删除用户
+    @ResponseBody
+    @RequestMapping(value = "/datadel")
+    public AjaxResult datadelUser(@RequestParam("ck") Integer[] ck){
+        for (Integer check : ck) {
+            userService.delUser(check);
+        }
+        return new AjaxResult(ck);
+    }
+
+    //修改用户
+    //1.将要修改的user存进session中
+    @ResponseBody
+    @RequestMapping(value = "/modiInfo")
+    public AjaxResult modiInfo(HttpServletRequest request,
+                               @RequestParam("uid") Integer uid) {
+        HttpSession session = request.getSession();
+        User user = userService.findUserByUserId(uid);
+        session.setAttribute("user", user);
+        return new AjaxResult(user);
+
+    }
+
+    //2.回显所要修改的信息
+    @ResponseBody
+    @RequestMapping(value = "/getUpdateInfo")
+    public AjaxResult getUpdateInfo(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        return new AjaxResult(user);
+    }
+
+    //3.保存修改后的信息
+    @ResponseBody
+    @RequestMapping(value = "/updateUser",method = RequestMethod.POST)
+    public AjaxResult updateUser(User user) {
+        System.out.println(user);
+        userService.updateUser(user);
+        return new AjaxResult(user);
+    }
+
+    //模糊查询
+    @ResponseBody
+    @RequestMapping(value = "/findByCondition")
+    public PageInfo<User> findByCondition(@RequestParam("no") Integer pageNo,
+                                          @RequestParam("size") Integer pageSize,
+                                          @RequestParam("adminname") String username,
+                                          @RequestParam("datemin") String datemin,
+                                          @RequestParam("datemax") String datemax){
+        System.out.println(datemax);
+        System.out.println(datemin);
+        PageInfo<User> pageInfo = userService.findUserByCondition(pageNo,pageSize,datemin,datemax,username);
+
+        return pageInfo;
     }
 
 }

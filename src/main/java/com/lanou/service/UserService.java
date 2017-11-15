@@ -21,4 +21,9 @@ public interface UserService {
     void updateUser(User user);
 
     void insertUser(User user);
+
+    void delUser(Integer uid);
+
+    //通过时间和名称查找用户
+    PageInfo<User> findUserByCondition(Integer pageNo, Integer pageSize,String datemin,String datemax,String username);
 }

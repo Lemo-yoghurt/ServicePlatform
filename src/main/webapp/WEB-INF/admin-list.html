@@ -36,8 +36,8 @@
         -
         <input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax"
                class="input-text Wdate" style="width:120px;">
-        <input type="text" class="input-text" style="width:250px" placeholder="输入管理员名称" id="" name="">
-        <button type="submit" class="btn btn-success" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜用户</button>
+        <input type="text" class="input-text" style="width:250px" placeholder="输入管理员名称" id="adminname" name="adminname">
+        <button type="submit" class="btn btn-success" id="search" name=""><i class="Hui-iconfont">&#xe665;</i> 搜用户</button>
     </div>
     <div class="cl pd-5 bg-1 bk-gray mt-20"><span class="l"><a href="javascript:;" onclick="datadel()"
                                                                class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a
@@ -115,6 +115,7 @@
         <!--</tr>-->
         </tbody>
     </table>
+
 </div>
 <!--_footer 作为公共模版分离出去-->
 <script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
@@ -140,14 +141,19 @@
     function admin_add(title, url, w, h) {
         layer_show(title, url, w, h);
     }
+
     /*管理员-删除*/
     function admin_del(obj, id) {
         layer.confirm('确认要删除吗？', function (index) {
             $.ajax({
                 type: 'POST',
-                url: '',
-                dataType: 'json',
+                url: '/delUser',
+//                dataType: 'json',
+                data: {
+                    uid: id
+                },
                 success: function (data) {
+                    console.log(data)
                     $(obj).parents("tr").remove();
                     layer.msg('已删除!', {icon: 1, time: 1000});
                 },
@@ -160,7 +166,18 @@
 
     /*管理员-编辑*/
     function admin_edit(title, url, id, w, h) {
-        layer_show(title, url, w, h);
+        $.ajax({
+            url: "/modiInfo",
+            data: {
+                uid: id
+            },
+            success: function (res) {
+                console.log(res)
+                layer_show(title, url, w, h);
+            }
+
+        })
+
     }
     /*管理员-停用*/
     function admin_stop(obj, id) {
@@ -168,13 +185,13 @@
             //此处请求后台程序，下方是成功后的前台处理……
             alert(id)
             $.ajax({
-                url:"/openOrPause",
-                data:{
-                    uid:id,
-                    flag:0
+                url: "/openOrPause",
+                data: {
+                    uid: id,
+                    flag: 0
                 },
-                success:function (res) {
-                   console.log(res)
+                success: function (res) {
+                    console.log(res)
                 }
             })
 
@@ -191,12 +208,12 @@
             //此处请求后台程序，下方是成功后的前台处理……
             alert(id)
             $.ajax({
-                url:"/openOrPause",
-                data:{
-                    uid:id,
-                    flag:1
+                url: "/openOrPause",
+                data: {
+                    uid: id,
+                    flag: 1
                 },
-                success:function (res) {
+                success: function (res) {
                     console.log(res)
                 }
             })
@@ -207,12 +224,63 @@
         });
     }
 
+    //批量删除
+    function datadel() {
+        var ck_value = []
+        $("input[name='ids']:checked").each(function () {
+            ck_value.push($(this).val())
+        })
+        if (ck_value.length == 0) {
+            alert("你还没有选择任何内容")
+        } else if (ck_value.length > 0) {
+            $.ajax({
+                url: "/datadel",
+                traditional: true,
+                data: {
+                    ck: ck_value
+                },
+                success: function (res) {
+                    console.log(res)
+                    $("input[name='ids']:checked").each(function () {
+                       $(this).parents("tr").remove()
+                    })
+                    layer.msg('删除成功!', {icon: 1, time: 1000});
+                    window.location.href="/admin-list"
+                }
+            })
+        }
+
+    }
+
+    //模糊查询
+    $("#search").click(function () {
+       $.ajax({
+           url:"/findByCondition",
+           data:{
+               no:null,
+               size:null,
+               adminname:$("#adminname").val(),
+               datemin:$("#datemin").val(),
+               datemax:$("#datemax").val()
+           },
+           success:function (res) {
+               console.log(res)
+               $("#dataList").empty()
+               $("#count").html(res.total)
+               $.each(res.list, function (i, domEle) {
+                   addNewTr(domEle)
+               })
+
+           }
+       })
+    })
+
 
     //添加一行数据
     function addNewTr(user) {
 
         //复选按钮
-        var td1 = $("<td><input type='checkbox' value='' name=''></td>")
+        var td1 = $("<td><input type='checkbox' name='ids' value=" + user.id + "></td>")
 
         //id
         var td2 = $("<td>" + user.id + "</td>")
@@ -268,13 +336,13 @@
 //        style="text-decoration:none">
 //                <i class="Hui-iconfont">
 //                &#xe6e2;</i>
-//        </a>
+//                                                                                                                                                </a>('管理员编辑','admin-add.html','1','800','500')"
 
         //编辑
-        var modify = $("<a title='编辑' href='javascript:;' onclick='admin_edit()' class='ml-5' style='text-decoration: none'><i class='Hui-iconfont'>&#xe6df;</i></a>")
+        var modify = $("<a title='编辑' href='javascript:;' class='ml-5' style='text-decoration: none'><i class='Hui-iconfont'>&#xe6df;</i></a>").attr("onclick", "admin_edit('管理员编辑','/admin-modi'," + user.id + ",'800','500')")
 
         //删除
-        var del = $("<a title='删除' href='javascript:;' onclick='admin_del(this)' class='ml-5' style='text-decoration: none'><i class='Hui-iconfont'>&#xe6e2;</i></a>")
+        var del = $("<a title='删除' href='javascript:;'  class='ml-5' style='text-decoration: none'><i class='Hui-iconfont'>&#xe6e2;</i></a>").attr("onclick", "admin_del(this," + user.id + ")")
 
         td9.append(open).append(modify).append(del)
 

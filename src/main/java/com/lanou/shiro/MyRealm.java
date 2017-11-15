@@ -65,8 +65,6 @@ public class MyRealm extends AuthorizingRealm {
 
         User  user = userService.findUserByUserName(username);
 
-        System.out.println(user);
-
         if (user == null) {
 
             throw new UnknownAccountException("用户名不对");
@@ -76,9 +74,6 @@ public class MyRealm extends AuthorizingRealm {
         if (!(user.getPassword().equals(password))) {
             throw new IncorrectCredentialsException("密码不对");
         }
-
-
-
 
 
         return new SimpleAuthenticationInfo(user, password, getName());

@@ -76,6 +76,21 @@
     SELECT <include refid="Base_Column_List"/>
     FROM sys_user WHERE role_id=#{roleId}
   </select>
+  <select id="findUserByCondition" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM sys_user
+    <where>
+      <if test="username != null">
+        AND username LIKE CONCAT('%',#{username},'%')
+      </if>
+      <if test="datemin != null || datemax != null">
+        AND create_time between #{datemin} and #{datemax}
+      </if>
+    </where>
+
+
+
+  </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from sys_user

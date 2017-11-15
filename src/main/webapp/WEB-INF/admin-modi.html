@@ -29,6 +29,7 @@
     <form class="form form-horizontal" id="form-admin-add">
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>管理员：</label>
+            <input type="hidden" id="uid" name="id">
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="text" class="input-text" value="" placeholder="" id="username" name="username">
             </div>
@@ -127,10 +128,6 @@
                 password: {
                     required: true,
                 },
-                password2: {
-                    required: true,
-                    equalTo: "#password"
-                },
                 sex: {
                     required: true,
                 },
@@ -152,9 +149,9 @@
             submitHandler: function (form) {
                 $(form).ajaxSubmit({
                     type: 'post',
-                    url: "/addAdmin",
+                    url: "/updateUser",
                     success: function (data) {
-                        layer.msg('添加成功!', {icon: 1, time: 1000});
+                        layer.msg('修改成功!', {icon: 1, time: 1000});
                     },
                     error: function (XmlHttpRequest, textStatus, errorThrown) {
                         layer.msg('error!', {icon: 1, time: 1000});
@@ -175,13 +172,35 @@
                 console.log(res)
                 var dt = res.data
                 $.each(dt, function (i, domEle) {
-                    var op = $("<option  value=" + domEle.id + ">" + domEle.name + "</option>")
+                    var op = $("<option  value=" + domEle.id + ">" + domEle.name + "</option>").attr("id", "sel" + domEle.id)
                     $("#roleId").append(op)
                 })
             }
         })
     }
     getAllRoles()
+
+    //显示要修改的信息
+
+        $(function () {
+            function updateInfo() {
+                $.ajax({
+                    url: "/getUpdateInfo",
+                    success: function (res) {
+                        console.log(res)
+                        var user = res.data
+                        $("#uid").val(user.id)
+                        $("#username").val(user.username)
+                        $("#tel").val(user.tel)
+                        $("#sel" + user.roleId).attr("selected", "selected")
+                        $("#email").val(user.email)
+                        $("#remark").val(user.remark)
+                    }
+                })
+            }
+
+            updateInfo()
+        })
 
 </script>
 <!--/请在上方写此页面业务相关的脚本-->

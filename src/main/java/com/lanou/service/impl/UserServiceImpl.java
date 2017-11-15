@@ -66,5 +66,31 @@ public class UserServiceImpl implements UserService {
        userMapper.insertSelective(user);
     }
 
+    //删除用户
+    @Override
+    public void delUser(Integer uid) {
+        userMapper.deleteByPrimaryKey(uid);
+    }
+
+
+    //根据条件查找用户
+    @Override
+    public PageInfo<User> findUserByCondition(Integer pageNo, Integer pageSize,String datemin,String datemax,String username) {
+        //判断参数的合法性
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? 5 : pageSize;
+
+        PageHelper.startPage(pageNo, pageSize);
+
+        List<User> users = userMapper.findUserByCondition(datemin,datemax,username);
+
+        PageInfo<User> pageInfo = new PageInfo<>(users);
+        return pageInfo;
+    }
+
+
+
+
+
 
 }
