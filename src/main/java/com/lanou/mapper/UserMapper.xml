@@ -83,8 +83,11 @@
       <if test="username != null">
         AND username LIKE CONCAT('%',#{username},'%')
       </if>
-      <if test="datemin != null || datemax != null">
-        AND create_time between #{datemin} and #{datemax}
+      <if test="datemin != null ">
+        AND create_time > #{datemin}
+      </if>
+      <if test="datemax != null">
+        AND #{datemax} > create_time
       </if>
     </where>
 

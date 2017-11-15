@@ -248,6 +248,13 @@ public class MainController {
                                           @RequestParam("datemax") String datemax){
         System.out.println(datemax);
         System.out.println(datemin);
+        if (username.equals("")){
+            username = null;
+        }if (datemax.equals("")){
+            datemax = null;
+        }if (datemin.equals("")){
+            datemin = null;
+        }
         PageInfo<User> pageInfo = userService.findUserByCondition(pageNo,pageSize,datemin,datemax,username);
 
         return pageInfo;
