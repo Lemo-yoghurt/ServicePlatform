@@ -6,6 +6,8 @@ import com.lanou.exception.CustomException;
 import com.lanou.service.UserService;
 import com.lanou.utils.AjaxResult;
 import com.lanou.utils.VerifyCode;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -32,6 +34,7 @@ import java.util.List;
 @Controller
 public class MainController {
 
+    static Logger logger = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);
 
     @Resource
     private UserService userService;
@@ -46,7 +49,7 @@ public class MainController {
 
         User user = (User) subject.getPrincipal();
 
-        System.out.println(user);
+        logger.info(user);
 
         model.addAttribute("user",user);
 
@@ -114,7 +117,7 @@ public class MainController {
     public AjaxResult getAllAdmin() {
 
         List<User> users = userService.getAllAdmin();
-        System.out.println(users);
+        logger.info(users);
 
         return new AjaxResult(users);
 
@@ -172,7 +175,7 @@ public class MainController {
     @ResponseBody
     @RequestMapping(value = "/addAdmin",method = RequestMethod.POST)
     public AjaxResult addUser(User user){
-        System.out.println(user);
+        logger.info(user);
         user.setState(1);
         user.setCreateTime(new Date());
         userService.insertUser(user);
