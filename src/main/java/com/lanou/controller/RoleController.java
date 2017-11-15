@@ -6,6 +6,7 @@ import com.lanou.service.RoleService;
 import com.lanou.utils.AjaxResult;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
@@ -43,4 +44,10 @@ public class RoleController {
         return "admin-role-add";
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/roledelbyid",method = RequestMethod.POST)
+    public AjaxResult roleDelById(Integer id) {
+        Integer integer = roleService.roleDelById(id);
+        return new AjaxResult(integer);
+    }
 }
