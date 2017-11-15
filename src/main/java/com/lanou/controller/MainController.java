@@ -6,6 +6,8 @@ import com.lanou.exception.CustomException;
 import com.lanou.service.UserService;
 import com.lanou.utils.AjaxResult;
 import com.lanou.utils.VerifyCode;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -33,11 +35,12 @@ import java.util.List;
 @Controller
 public class MainController {
 
+    static Logger logger = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);
 
     @Resource
     private UserService userService;
-
     /**
+     *
      * @return
      */
     @RequestMapping(value = "/")
@@ -47,9 +50,9 @@ public class MainController {
 
         User user = (User) subject.getPrincipal();
 
-        System.out.println(user);
+        logger.info(user);
 
-        model.addAttribute("user", user);
+        model.addAttribute("user",user);
 
         return "index";
     }
@@ -59,6 +62,7 @@ public class MainController {
     public String welcome() {
         return "welcome";
     }
+
 
 
     @ResponseBody
@@ -85,7 +89,7 @@ public class MainController {
     @RequestMapping("/login")
     public String login() throws IOException {
 
-        if (SecurityUtils.getSubject().isAuthenticated()) {
+        if(SecurityUtils.getSubject().isAuthenticated()){
             return "index";
         }
         return "login";
@@ -96,13 +100,13 @@ public class MainController {
     public String loginsubmit(HttpServletRequest request) throws Exception {
         String exceptionClassName =
                 (String) request.getAttribute("shiroLoginFailure");
-        if (exceptionClassName.equals(UnknownAccountException.class.getName())) {
+        if (exceptionClassName.equals(UnknownAccountException.class.getName())){
             throw new CustomException("账户名不存在");
-        } else if (IncorrectCredentialsException.class.getName().equals(exceptionClassName)) {
-            throw new CustomException("密码错误");
-        } else if ("randomCodeError".equals(exceptionClassName)) {
+        }else if (IncorrectCredentialsException.class.getName().equals(exceptionClassName)){
+            throw  new CustomException("密码错误");
+        }else if ("randomCodeError".equals(exceptionClassName)){
             throw new CustomException("验证码错误");
-        } else {
+        }else {
             throw new Exception();
         }
 
@@ -114,7 +118,7 @@ public class MainController {
     public AjaxResult getAllAdmin() {
 
         List<User> users = userService.getAllAdmin();
-        System.out.println(users);
+        logger.info(users);
 
         return new AjaxResult(users);
 
@@ -124,7 +128,7 @@ public class MainController {
     @ResponseBody
     @RequestMapping(value = "/getAllUsers")
     public PageInfo<User> getAllUsers(@RequestParam("no") Integer pageNo,
-                                      @RequestParam("size") Integer pageSize) {
+                                      @RequestParam("size") Integer pageSize){
 
         PageInfo<User> pageInfo = userService.queryUserByPage(pageNo, pageSize);
 
@@ -138,7 +142,7 @@ public class MainController {
 
     //添加页面
     @RequestMapping(value = "/admin-add")
-    public String addAdmin() {
+    public String addAdmin(){
         return "admin-add";
     }
 
@@ -150,7 +154,6 @@ public class MainController {
 
     /**
      * 角色管理
-     *
      * @return /admin-role
      */
     @RequestMapping(value = "/admin-role")
@@ -162,24 +165,24 @@ public class MainController {
     @ResponseBody
     @RequestMapping(value = "/openOrPause")
     public AjaxResult openOrPause(@RequestParam("uid") Integer uid,
-                                  @RequestParam("flag") Integer flag) {
-        User user = userService.findUserByUserId(uid);
-        if (flag == 0) {
-            user.setState(0);
-        } else if (flag == 1) {
-            user.setState(1);
-        }
+                                  @RequestParam("flag") Integer flag){
+          User user = userService.findUserByUserId(uid);
+          if (flag == 0){
+              user.setState(0);
+          }else if (flag == 1){
+              user.setState(1);
+          }
 
-        userService.updateUser(user);
+          userService.updateUser(user);
 
-        return new AjaxResult(user);
+          return new AjaxResult(user);
 
     }
-
     //添加用户
     @ResponseBody
-    @RequestMapping(value = "/addAdmin", method = RequestMethod.POST)
-    public AjaxResult addUser(User user) {
+    @RequestMapping(value = "/addAdmin",method = RequestMethod.POST)
+    public AjaxResult addUser(User user){
+        logger.info(user);
         user.setState(1);
         user.setCreateTime(new Date());
         userService.insertUser(user);
