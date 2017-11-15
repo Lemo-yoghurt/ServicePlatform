@@ -144,7 +144,7 @@ public class MainController {
 
     //修改页面
     @RequestMapping(value = "/admin-modi")
-    public String modiAdmin(){
+    public String modiAdmin() {
         return "admin-modi";
     }
 
@@ -197,7 +197,7 @@ public class MainController {
     //批量删除用户
     @ResponseBody
     @RequestMapping(value = "/datadel")
-    public AjaxResult datadelUser(@RequestParam("ck") Integer[] ck){
+    public AjaxResult datadelUser(@RequestParam("ck") Integer[] ck) {
         for (Integer check : ck) {
             userService.delUser(check);
         }
@@ -228,7 +228,7 @@ public class MainController {
 
     //3.保存修改后的信息
     @ResponseBody
-    @RequestMapping(value = "/updateUser",method = RequestMethod.POST)
+    @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
     public AjaxResult updateUser(User user) {
         System.out.println(user);
         userService.updateUser(user);
@@ -242,10 +242,20 @@ public class MainController {
                                           @RequestParam("size") Integer pageSize,
                                           @RequestParam("adminname") String username,
                                           @RequestParam("datemin") String datemin,
-                                          @RequestParam("datemax") String datemax){
-        System.out.println(datemax);
-        System.out.println(datemin);
-        PageInfo<User> pageInfo = userService.findUserByCondition(pageNo,pageSize,datemin,datemax,username);
+                                          @RequestParam("datemax") String datemax) {
+        System.out.println(username + "********");
+        System.out.println(datemax + "*********");
+        System.out.println(datemin + "*********");
+        if (username.equals("")) {
+            username = null;
+        }
+        if (datemax.equals("")) {
+            datemax = null;
+        }
+        if (datemin.equals("")) {
+            datemin = null;
+        }
+        PageInfo<User> pageInfo = userService.findUserByCondition(pageNo, pageSize, datemin, datemax, username);
 
         return pageInfo;
     }
