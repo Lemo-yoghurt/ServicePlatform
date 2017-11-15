@@ -24,7 +24,7 @@
 <![endif]-->
 <!--/meta 作为公共模版分离出去-->
 
-<title>新建网站角色 - 管理员管理 - H-ui.admin v3.1</title>
+<title>编辑网站角色 - 管理员管理 - H-ui.admin v3.1</title>
 <meta name="keywords" content="H-ui.admin v3.1,H-ui网站后台模版,后台模版下载,后台管理系统模版,HTML后台模版下载">
 <meta name="description" content="H-ui.admin v3.1，是一款由国人开发的轻量级扁平化网站后台模板，完全免费开源的网站后台管理系统模版，适合中小型CMS后台系统。">
 </head>
@@ -164,26 +164,9 @@
      */
 
     /**
-	 * 保存增加数据
+	 * 回显
      */
-    function addCost() {
-        $.ajax({
-            type: "POST",
-            url:"/addcost",
-            data: {
-                name: $("#name").val(),
-                baseDuration: $("#baseDuration").val(),
-                baseCost: $("#baseCost").val(),
-                unitCost: $("#unitCost").val(),
-                descr: $("#descr").val()
-            },
-            success: function (request) {
-                if (request.data == 1) {
-                    window.location.href = '/fee/fee_list';
-                }
-            }
-        })
-    }
+
 
 $(function(){
 	$(".permission-list dt input:checkbox").click(function(){

@@ -91,6 +91,14 @@
 <script type="text/javascript" src="../lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
 <script src="../js/utils.js"></script>
 <script type="text/javascript">
+	/*
+	 参数解释：
+	 title	标题
+	 url		请求的url
+	 id		需要操作的数据id
+	 w		弹出层宽度（缺省调默认值）
+	 h		弹出层高度（缺省调默认值）
+	 */
 /*管理员-角色-添加*/
 function admin_role_add(title,url,w,h){
 	layer_show(title,url,w,h);
@@ -102,13 +110,17 @@ function admin_role_edit(title,url,id,w,h){
 /*管理员-角色-删除*/
 function admin_role_del(obj,id){
 	layer.confirm('角色删除须谨慎，确认要删除吗？',function(index){
-		$.ajax({
+	    $.ajax({
 			type: 'POST',
-			url: '',
-			dataType: 'json',
+			url: '/roledelbyid',
+			data:{
+			    id:id
+			},
+//			dataType: 'json',
 			success: function(data){
 				$(obj).parents("tr").remove();
 				layer.msg('已删除!',{icon:1,time:1000});
+                console.log(data);
 			},
 			error:function(data) {
 				console.log(data.msg);
@@ -116,11 +128,6 @@ function admin_role_del(obj,id){
 		});		
 	});
 }
-
-/**
- * 从此处开始jquery代码
- */
-
 
 /**
  * 添加tr的方法
@@ -131,12 +138,17 @@ function addNewTr(role) {
     var td0 = $("<td></td>").html("<input type='checkbox'>");
     var td1 = $("<td></td>").html(role.name);
     var td2 = $("<td></td>").html(getLocalTime(role.createTime));
-    var td3 = $("<td></td>").html(role.user.username);
+    var userList = role.users;
+    var username = null;
+    for (var i=0;i<userList.length;i++){
+        username = userList[i].username;
+    }
+    var td3 = $("<td></td>").html(username);
     var td4 = $("<td></td>").html(role.sort);
     var td5 = $("<td></td>").html(role.status);
     var td6 = $("<td></td>");
-	var modify = $("<a title='编辑' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a>");
-    var del = $("<a title='删除' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a>");
+	var modify = $("<a title='编辑' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a>").attr("onclick","admin_role_edit('编辑角色','/roleAdd',"+role.id+",'800')");
+    var del = $("<a title='删除' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a>").attr('onclick',"admin_role_del(this,"+role.id+")");
     td6.attr("id","opr"+role.id).append(modify).append(del);
     var trob = $("<tr class='text-c'></tr>").append(td0).append(td1).append(td2).append(td3).append(td4).append(td5).append(td6)
         .attr("id", "trname" + role.id);
@@ -147,6 +159,7 @@ function addNewTr(role) {
  * 显示全部
  */
 function getAll() {
+
     $.ajax({
         url: "/getAllRole",
         data: {
@@ -156,7 +169,7 @@ function getAll() {
         },
         success: function (result) {
             var dataList = result.data;
-//                console.log(result);
+                console.log(result);
             $.each(dataList, function (i, domEle) {
                 addNewTr(domEle)
             });

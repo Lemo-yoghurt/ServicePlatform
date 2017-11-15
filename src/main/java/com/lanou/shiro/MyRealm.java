@@ -1,20 +1,23 @@
 package com.lanou.shiro;
 
-
 import com.lanou.bean.User;
 import com.lanou.service.UserService;
-import org.apache.shiro.authc.*;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Resource;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.subject.Subject;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by dllo on 17/11/7.
@@ -22,67 +25,59 @@ import java.util.List;
 
 public class MyRealm extends AuthorizingRealm {
 
-    @Resource
+  @Resource
     private UserService userService;
 
 
 
-    @Override
+  @Override
     public String getName() {
-        return super.getName();
-    }
+    return super.getName();
+  }
 
-    @Override
+  @Override
     public boolean supports(AuthenticationToken token) {
-        return token instanceof UsernamePasswordToken;
-    }
+    return token instanceof UsernamePasswordToken;
+  }
 
-
-
-    //授权
-    @Override
+  //授权
+  @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
 
-        User user = (User) principalCollection.getPrimaryPrincipal();
+    User user = (User) principalCollection.getPrimaryPrincipal();
 
-        //可以获取user的用户id及各种信息
-        List<String> perList = Arrays.asList("user:query", "user:update");
+    //可以获取user的用户id及各种信息
+    List<String> perList = Arrays.asList("user:query", "user:update");
 
-        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+    SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 
-        for (String per : perList) {
-            info.addStringPermission(per);
-        }
-
-        return info;
+    for (String per : perList) {
+      info.addStringPermission(per);
     }
 
-    //认证
-    @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        String username = (String) authenticationToken.getPrincipal();
+    return info;
+  }
+
+  //认证
+  @Override
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken)
+          throws AuthenticationException {
+    String username = (String) authenticationToken.getPrincipal();
 
 
-        User  user = userService.findUserByUserName(username);
+    User  user = userService.findUserByUserName(username);
 
-        System.out.println(user);
-
-        if (user == null) {
-
-            throw new UnknownAccountException("用户名不对");
-        }
-        String password = new String((char[]) authenticationToken.getCredentials());
-
-        if (!(user.getPassword().equals(password))) {
-            throw new IncorrectCredentialsException("密码不对");
-        }
-
-
-
-
-
-        return new SimpleAuthenticationInfo(user, password, getName());
-
+    if (user == null) {
+      throw new UnknownAccountException("用户名不对");
     }
+
+    String password = new String((char[]) authenticationToken.getCredentials());
+
+    if (!(user.getPassword().equals(password))) {
+      throw new IncorrectCredentialsException("密码不对");
+    }
+
+    return new SimpleAuthenticationInfo(user, password, getName());
+  }
 
 }

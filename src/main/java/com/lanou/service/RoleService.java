@@ -17,4 +17,10 @@ public interface RoleService {
      */
     List<Role> getAllRole();
 
+    /**
+     * 通过id删除
+     * @return 删除成功/失败
+     */
+    Integer roleDelById(Integer id);
+
 }
